@@ -1,11 +1,9 @@
 name: Playwright Tests
 on:
   push:
-    branches: [ main, master ]  # any codes pushed in main or master branch, GitHub action
-                                # will be triggered; code and test will be executed
+    branches: [ main, master ]
   pull_request:
-    branches: [ main, master ]  # any pull requests to main or master branch, GitHub action
-                                # will be triggered; code and test will be executed
+    branches: [ main, master ]
   workflow_dispatch:
     inputs:
       browser:
@@ -16,12 +14,14 @@ on:
           - firefox
           - chromium
           - webkit
+
 jobs:
   test:
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
-    - uses: actions/setup-node@v6
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
       with:
         node-version: lts/*
     - name: Install dependencies
@@ -29,10 +29,9 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
-      run: npx playwright test    # NPM script that can be customized based on needs on testing;
-                                  # typical commands being used in the command line
-    - uses: actions/upload-artifact@v5
-      if: ${{ !cancelled() }}
+      run: npx playwright test --project ${{ github.event.inputs.browser }}
+    - uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: playwright-report
         path: playwright-report/
