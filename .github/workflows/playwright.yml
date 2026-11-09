@@ -6,6 +6,16 @@ on:
   pull_request:
     branches: [ main, master ]  # any pull requests to main or master branch, GitHub action
                                 # will be triggered; code and test will be executed
+  workflow_dispatch:
+    inputs:
+      browser:
+        type: choice
+        description: Which browser to test
+        required: true
+        options:
+          - firefox
+          - chromium
+          - webkit
 jobs:
   test:
     runs-on: ubuntu-latest
